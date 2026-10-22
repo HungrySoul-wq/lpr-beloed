@@ -1,0 +1,13 @@
+Изменить существующие строки в .env:
+
+APP_NAME="LPR beloed"
+APP_URL=http://127.0.0.1:8106
+APP_LOCALE=ru
+
+Добавить в конец .env:
+
+LAB_STUDENT="Белоед Дмитрий"
+LAB_SLUG=beloed
+LAB_GROUP=Ис24-23Б
+LAB_N=6
+LAB_CODE=A-COUR
