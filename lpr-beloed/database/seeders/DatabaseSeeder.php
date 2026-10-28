@@ -2,24 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Country;
+use App\Models\Extra;
+use App\Models\Tour;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Country::factory(3)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        Extra::factory(3)->create();
+
+        Tour::factory(5)->create()->each(function (Tour $tour) {
+            $tour->extras()->attach(
+                Extra::query()->inRandomOrder()->limit(2)->pluck('id')
+            );
+        });
+
     }
 }
