@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Tour;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
@@ -29,35 +29,44 @@ class CatalogController extends Controller
 
     // GET /catalog?q=...&sort=...
     public function index(Request $request)
-    {
-        $tours = collect($this->tours());
+{
+    $search = $request->query('q');
+    $sort = $request->query('sort', 'created_at');
 
-        $search = $request->query('q');
-        if ($search) {
-            $tours = $tours->filter(fn ($t) => mb_stripos($t['title'], $search) !== false);
-        }
+    $query = Tour::with('country');
 
-        $sort = $request->query('sort', 'title');
-        if (in_array($sort, ['title', 'start_date', 'price'])) {
-            $tours = $tours->sortBy($sort);
-        }
-
-        return view('catalog.index', [
-            'title'  => 'Каталог туров',
-            'tours'  => $tours,
-            'search' => $search,
-            'sort'   => $sort,
-        ]);
+    if ($search) {
+        $query->where('title', 'like', '%' . $search . '%');
     }
+
+    if (in_array($sort, ['title', 'start_date', 'price', 'created_at'])) {
+        $direction = $sort === 'created_at' ? 'desc' : 'asc';
+        $query->orderBy($sort, $direction);
+    } else {
+        $sort = 'created_at';
+        $query->orderBy('created_at', 'desc');
+    }
+
+    $tours = $query->paginate(5)->withQueryString();
+
+    return view('catalog.index', [
+        'title' => 'Каталог туров',
+        'tours' => $tours,
+        'search' => $search,
+        'sort' => $sort,
+    ]);
+}
 
     // GET /catalog/3
     public function show(int $id)
-    {
-        $tour = collect($this->tours())->firstWhere('id', $id);
-        abort_if(! $tour, 404);
+{
+    $tour = Tour::with('country')->findOrFail($id);
 
-        return view('catalog.show', ['title' => $tour['title'], 'tour' => $tour]);
-    }
+    return view('catalog.show', [
+        'title' => $tour->title,
+        'tour' => $tour,
+    ]);
+}
 
     // GET /catalog/code/EG-0102
     public function byCode(string $code)
