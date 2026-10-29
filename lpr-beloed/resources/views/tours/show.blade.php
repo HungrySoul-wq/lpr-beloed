@@ -11,6 +11,9 @@
         <dt class="col-sm-3">Страна</dt>
         <dd class="col-sm-9">{{ $tour->country->name }}</dd>
 
+        <dt class="col-sm-3">Описание</dt>
+        <dd class="col-sm-9">{{ $tour->description ?: 'Не указано' }}</dd>
+
         <dt class="col-sm-3">Дата начала</dt>
         <dd class="col-sm-9">{{ $tour->start_date->format('d.m.Y') }}</dd>
 

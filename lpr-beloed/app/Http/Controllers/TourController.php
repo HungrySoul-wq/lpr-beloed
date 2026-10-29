@@ -2,83 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TourRequest;
 use App\Models\Country;
 use App\Models\Tour;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class TourController extends Controller
 {
-    public function index()
+    // GET /tours?q=...
+    public function index(Request $request)
     {
-        $tours = Tour::with('country')
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+        $query = Tour::with('country'); // жадная загрузка связи
 
-        return view('tours.index', compact('tours'));
+        if ($search = $request->query('q')) {
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        $tours = $query->latest()                    // SORT = сначала новые
+            ->paginate(5)                            // PER_PAGE = 5
+            ->withQueryString();
+
+        return view('tours.index', ['title' => 'Управление турами', 'tours' => $tours]);
     }
 
+    // GET /tours/create
     public function create()
     {
-        $countries = Country::orderBy('name')->get();
-
-        return view('tours.create', compact('countries'));
+        return view('tours.form', [
+            'title'     => 'Добавить тур',
+            'tour'      => new Tour(),
+            'countries' => Country::orderBy('name')->get(),
+        ]);
     }
 
-    public function store(Request $request)
+    // POST /tours
+    public function store(TourRequest $request)
     {
-        $validated = $request->validate([
-            'country_id' => ['required', 'integer', 'exists:countries,id'],
-            'title' => ['required', 'string', 'min:2', 'max:150'],
-            'start_date' => ['required', 'date'],
-            'days' => ['required', 'integer', 'min:1', 'max:365'],
-            'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
-            'is_hot' => ['nullable', 'boolean'],
-        ]);
-
-        $validated['is_hot'] = $request->boolean('is_hot');
-
-        $tour = Tour::create($validated);
+        $tour = Tour::create($request->validated()); // только проверенные поля
 
         return redirect()
             ->route('tours.show', $tour)
-            ->with('success', 'Тур успешно создан.');
+            ->with('success', "Добавлено: {$tour->title} (id {$tour->id})");
     }
 
+    // GET /tours/{tour}
     public function show(Tour $tour)
     {
         $tour->load(['country', 'extras']);
 
-        return view('tours.show', compact('tour'));
+        return view('tours.show', ['title' => $tour->title, 'tour' => $tour]);
     }
 
+    // GET /tours/{tour}/edit
     public function edit(Tour $tour)
     {
-        $countries = Country::orderBy('name')->get();
-
-        return view('tours.edit', compact('tour', 'countries'));
+        return view('tours.form', [
+            'title'     => 'Редактировать тур',
+            'tour'      => $tour,
+            'countries' => Country::orderBy('name')->get(),
+        ]);
     }
 
-    public function update(Request $request, Tour $tour)
+    // PUT /tours/{tour}
+    public function update(TourRequest $request, Tour $tour)
     {
-        $validated = $request->validate([
-            'country_id' => ['required', 'integer', 'exists:countries,id'],
-            'title' => ['required', 'string', 'min:2', 'max:150'],
-            'start_date' => ['required', 'date'],
-            'days' => ['required', 'integer', 'min:1', 'max:365'],
-            'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
-            'is_hot' => ['nullable', 'boolean'],
-        ]);
-
-        $validated['is_hot'] = $request->boolean('is_hot');
-
-        $tour->update($validated);
+        $tour->update($request->validated());
 
         return redirect()
             ->route('tours.show', $tour)
-            ->with('success', 'Тур успешно обновлён.');
+            ->with('success', 'Изменения сохранены.');
     }
 
+    // DELETE /tours/{tour}
     public function destroy(Tour $tour)
     {
         $tour->extras()->detach();
@@ -86,6 +81,6 @@ class TourController extends Controller
 
         return redirect()
             ->route('tours.index')
-            ->with('success', 'Тур удалён.');
+            ->with('success', "Удалено: {$tour->title}");
     }
 }
