@@ -1,0 +1,185 @@
+commit a0748a0f6c6aebfab9013b81bfcb68c7a71d8180
+Author: ИС-24-23Б <белоедд@POLYTECH2.KZ>
+Date:   2026-10-29 15:41:23 +0500
+
+    ЛПР9 п.1: изменение длины названия тура
+
+ ...9_103740_change_title_length_in_tours_table.php | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+commit 2812f967fef7e673229ce317a9917c5521de854e
+Author: ИС-24-23Б <белоедд@POLYTECH2.KZ>
+Date:   2026-10-29 15:23:31 +0500
+
+    ЛПР9: исправлен фильтр по стране и параметры отчета
+
+ lpr-beloed/.env.example                            |  2 +-
+ .../app/Http/Controllers/CatalogController.php     | 32 +++++++++++++---------
+ 2 files changed, 20 insertions(+), 14 deletions(-)
+
+commit 8085b60ec7fa3ac203d3afbd607361b05c33db26
+Author: dima <dimabeloed9@gmail.com>
+Date:   2026-10-29 00:05:15 +0600
+
+    ЛПР9: CRUD туров и серверная валидация
+
+ lpr-beloed/app/Http/Controllers/TourController.php | 91 ++++++++++++++++++++++
+ lpr-beloed/resources/views/tours/create.blade.php  | 64 +++++++++++++++
+ lpr-beloed/resources/views/tours/edit.blade.php    | 68 ++++++++++++++++
+ lpr-beloed/resources/views/tours/index.blade.php   | 56 +++++++++++++
+ lpr-beloed/resources/views/tours/show.blade.php    | 41 ++++++++++
+ lpr-beloed/routes/web.php                          |  3 +-
+ 6 files changed, 322 insertions(+), 1 deletion(-)
+
+commit 149e3de04f3ab3f49f54158609316e7a63a550db
+Author: dima <dimabeloed9@gmail.com>
+Date:   2026-10-28 23:37:57 +0600
+
+    ЛПР9: каталог из базы, русские туры и пагинация
+
+ .../app/Http/Controllers/CatalogController.php     | 53 ++++++++++--------
+ lpr-beloed/database/seeders/DatabaseSeeder.php     | 63 +++++++++++++++++++---
+ lpr-beloed/resources/views/catalog/index.blade.php | 48 +++++++++++++----
+ lpr-beloed/resources/views/catalog/show.blade.php  | 26 ++++++---
+ 4 files changed, 144 insertions(+), 46 deletions(-)
+
+commit 6d0af1548f814a84b6a58152d2a8c6b3a76f62d6
+Author: dima <dimabeloed9@gmail.com>
+Date:   2026-10-28 23:26:16 +0600
+
+    ЛПР9 п.1: модели, миграции и заполнение базы
+
+ lpr-beloed/app/Models/Country.php                  | 29 +++++++++++++++
+ lpr-beloed/app/Models/Extra.php                    | 19 ++++++++++
+ lpr-beloed/app/Models/Tour.php                     | 42 ++++++++++++++++++++++
+ lpr-beloed/database/factories/CountryFactory.php   | 16 +++++++++
+ lpr-beloed/database/factories/ExtraFactory.php     | 15 ++++++++
+ lpr-beloed/database/factories/TourFactory.php      | 25 +++++++++++++
+ .../2026_10_28_144319_create_countries_table.php   | 29 +++++++++++++++
+ .../2026_10_28_144500_create_tours_table.php       | 35 ++++++++++++++++++
+ .../2026_10_28_144927_create_extras_table.php      | 22 ++++++++++++
+ .../2026_10_28_145105_create_extra_tour_table.php  | 28 +++++++++++++++
+ lpr-beloed/database/seeders/DatabaseSeeder.php     | 26 +++++++-------
+ 11 files changed, 273 insertions(+), 13 deletions(-)
+
+commit f52305a688e6e54362bb655f50674df0257370d1
+Author: dima <dimabeloed9@gmail.com>
+Date:   2026-10-28 19:22:36 +0600
+
+    Настройки проекта для ЛПР 8
+
+ lpr-beloed/.env.example | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+commit 15a7e58743141eaa205eadcbbb519ed50a25062c
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 17:31:30 +0600
+
+    ЛПР8 п.6: добавление туров
+
+ .../app/Http/Controllers/CatalogController.php     | 78 +++++++++++++++++++++-
+ lpr-beloed/app/Http/Controllers/PageController.php | 15 ++++-
+ lpr-beloed/config/lab.php                          |  9 +++
+ lpr-beloed/env-lines.txt                           | 13 ++++
+ lpr-beloed/resources/views/catalog/index.blade.php | 35 ++++++++++
+ lpr-beloed/resources/views/catalog/show.blade.php  | 17 +++++
+ lpr-beloed/resources/views/feedback.blade.php      | 12 ++++
+ lpr-beloed/resources/views/layouts/app.blade.php   | 31 +++++++++
+ lpr-beloed/routes/web.php                          | 20 ++++--
+ 9 files changed, 224 insertions(+), 6 deletions(-)
+
+commit f20270b7e737e02e0187fdc7ad70c0c376a55f5a
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 16:35:12 +0600
+
+    ЛПР8 п.6: POST-форма
+
+commit acb05c702b875cc102ae1f6e6670c2aab95def34
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 16:35:02 +0600
+
+    ЛПР8 п.5: Blade-шаблоны
+
+commit 64a5cfe8431d9ead8cbb121d01a9fa0d2c16cd5d
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 16:34:30 +0600
+
+    ЛПР8 п.3-4: маршрут /hello и контроллеры каталога
+
+commit 4b5530518dba8bad5d758e5fdd71a8fc7161dd92
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 16:33:36 +0600
+
+    git commit -m "ЛПР8 п.2: настройки .env и config/lab.php"
+
+ lpr-beloed/app/Http/Controllers/CatalogController.php | 10 ++++++++++
+ lpr-beloed/app/Http/Controllers/PageController.php    | 10 ++++++++++
+ lpr-beloed/routes/web.php                             |  3 +++
+ 3 files changed, 23 insertions(+)
+
+commit 001231c6f6d6a9c116921533be64f2d04f3196b5
+Author: Белоед Дмитрий <dimabeloed9@gmail.com>
+Date:   2026-10-22 16:09:38 +0600
+
+    ЛПР8 п.1: установка Laravel
+
+ lpr-beloed/.editorconfig                           |   18 +
+ lpr-beloed/.env.example                            |   65 +
+ lpr-beloed/.gitattributes                          |   11 +
+ lpr-beloed/.gitignore                              |   27 +
+ lpr-beloed/.npmrc                                  |    2 +
+ lpr-beloed/AGENTS.md                               |   47 +
+ lpr-beloed/CLAUDE.md                               |   47 +
+ lpr-beloed/README.md                               |   58 +
+ lpr-beloed/app/Http/Controllers/Controller.php     |    8 +
+ lpr-beloed/app/Models/User.php                     |   32 +
+ lpr-beloed/app/Providers/AppServiceProvider.php    |   24 +
+ lpr-beloed/artisan                                 |   18 +
+ lpr-beloed/bootstrap/app.php                       |   21 +
+ lpr-beloed/bootstrap/cache/.gitignore              |    2 +
+ lpr-beloed/bootstrap/providers.php                 |    7 +
+ lpr-beloed/composer.json                           |   86 +
+ lpr-beloed/composer.lock                           | 8467 ++++++++++++++++++++
+ lpr-beloed/config/app.php                          |  126 +
+ lpr-beloed/config/auth.php                         |  117 +
+ lpr-beloed/config/cache.php                        |  136 +
+ lpr-beloed/config/database.php                     |  184 +
+ lpr-beloed/config/filesystems.php                  |   80 +
+ lpr-beloed/config/logging.php                      |  140 +
+ lpr-beloed/config/mail.php                         |  118 +
+ lpr-beloed/config/queue.php                        |  129 +
+ lpr-beloed/config/services.php                     |   38 +
+ lpr-beloed/config/session.php                      |  233 +
+ lpr-beloed/database/.gitignore                     |    1 +
+ lpr-beloed/database/factories/UserFactory.php      |   45 +
+ .../0001_01_01_000000_create_users_table.php       |   49 +
+ .../0001_01_01_000001_create_cache_table.php       |   35 +
+ .../0001_01_01_000002_create_jobs_table.php        |   59 +
+ lpr-beloed/database/seeders/DatabaseSeeder.php     |   25 +
+ lpr-beloed/package.json                            |   19 +
+ lpr-beloed/phpunit.xml                             |   36 +
+ lpr-beloed/public/.htaccess                        |   25 +
+ lpr-beloed/public/favicon.ico                      |    0
+ lpr-beloed/public/index.php                        |   20 +
+ lpr-beloed/public/robots.txt                       |    2 +
+ lpr-beloed/resources/css/app.css                   |    9 +
+ lpr-beloed/resources/js/app.js                     |    1 +
+ lpr-beloed/resources/views/welcome.blade.php       |  223 +
+ lpr-beloed/routes/console.php                      |    8 +
+ lpr-beloed/routes/web.php                          |    7 +
+ lpr-beloed/storage/app/.gitignore                  |    4 +
+ lpr-beloed/storage/app/private/.gitignore          |    2 +
+ lpr-beloed/storage/app/public/.gitignore           |    2 +
+ lpr-beloed/storage/framework/.gitignore            |   10 +
+ lpr-beloed/storage/framework/cache/.gitignore      |    4 +
+ lpr-beloed/storage/framework/cache/data/.gitignore |    2 +
+ .../storage/framework/cache/locks/.gitignore       |    2 +
+ lpr-beloed/storage/framework/sessions/.gitignore   |    2 +
+ lpr-beloed/storage/framework/testing/.gitignore    |    2 +
+ lpr-beloed/storage/framework/views/.gitignore      |    2 +
+ lpr-beloed/storage/logs/.gitignore                 |    2 +
+ lpr-beloed/tests/Feature/ExampleTest.php           |   19 +
+ lpr-beloed/tests/TestCase.php                      |   10 +
+ lpr-beloed/tests/Unit/ExampleTest.php              |   16 +
+ lpr-beloed/vite.config.js                          |   24 +
+ 59 files changed, 10908 insertions(+)
