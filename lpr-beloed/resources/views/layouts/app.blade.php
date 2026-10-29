@@ -9,7 +9,10 @@
     <nav class="navbar navbar-expand bg-dark navbar-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="{{ route('catalog.index') }}">{{ config('app.name') }}</a>
-            <a class="nav-link text-light" href="{{ route('feedback.form') }}">Обратная связь</a>
+            <div class="navbar-nav">
+                <a class="nav-link text-light" href="{{ route('tours.index') }}">Туры (БД)</a>
+                <a class="nav-link text-light" href="{{ route('feedback.form') }}">Обратная связь</a>
+            </div>
         </div>
     </nav>
 

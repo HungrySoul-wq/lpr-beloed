@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Управление турами</h1>
+        <h1>{{ $title }}</h1>
         <a href="{{ route('tours.create') }}" class="btn btn-primary">Добавить тур</a>
     </div>
 
@@ -10,9 +10,17 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-striped">
+    <form method="GET" action="{{ route('tours.index') }}" class="row g-2 mb-3">
+        <div class="col-auto">
+            <input name="q" value="{{ request('q') }}" class="form-control" placeholder="Название...">
+        </div>
+        <div class="col-auto"><button class="btn btn-secondary">Найти</button></div>
+    </form>
+
+    <table class="table table-striped align-middle">
         <thead>
             <tr>
+                <th>#</th>
                 <th>Название</th>
                 <th>Страна</th>
                 <th>Дата начала</th>
@@ -24,7 +32,11 @@
         <tbody>
             @forelse ($tours as $tour)
                 <tr>
-                    <td>{{ $tour->title }}</td>
+                    <td>{{ $tour->id }}</td>
+                    <td>
+                        {{ $tour->title }}
+                        @if ($tour->is_hot) <span class="badge bg-danger">Горящий</span> @endif
+                    </td>
                     <td>{{ $tour->country->name }}</td>
                     <td>{{ $tour->start_date->format('d.m.Y') }}</td>
                     <td>{{ $tour->days }}</td>
@@ -42,7 +54,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">Туры не найдены.</td>
+                    <td colspan="7" class="text-muted">Туры не найдены.</td>
                 </tr>
             @endforelse
         </tbody>
