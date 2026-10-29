@@ -78,18 +78,24 @@ class CatalogController extends Controller
     }
 
     // GET /catalog/country/Турция  или  /catalog/country
-    public function byCountry(?string $country = null)
-    {
-        $tours = collect($this->tours());
-        if ($country) {
-            $tours = $tours->where('country', $country);
-        }
+   // GET /catalog/country/Турция или /catalog/country
+public function byCountry(?string $country = null)
+{
+    $query = Tour::with('country');
 
-        return view('catalog.index', [
-            'title'  => $country ? "Туры: {$country}" : 'Все страны',
-            'tours'  => $tours,
-            'search' => null,
-            'sort'   => 'title',
-        ]);
+    if ($country) {
+        $query->whereHas('country', function ($q) use ($country) {
+            $q->where('name', $country);
+        });
     }
+
+    $tours = $query->orderBy('title')->paginate(5);
+
+    return view('catalog.index', [
+        'title' => $country ? "Туры: {$country}" : 'Все страны',
+        'tours' => $tours,
+        'search' => null,
+        'sort' => 'title',
+    ]);
+}
 }
