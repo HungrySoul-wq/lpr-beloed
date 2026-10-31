@@ -1,0 +1,420 @@
+{
+  "info": {
+    "_postman_id": "0264e0e6-9fa1-413a-8bea-fdf7525ead5f",
+    "name": "LPR10 Белоед",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59372286",
+    "_collection_link": "https://go.postman.co/collection/59372286-0264e0e6-9fa1-413a-8bea-fdf7525ead5f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "0. GET /ping",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"pong и student\", () => {",
+              "  pm.expect(body.message).to.eql(\"pong\");",
+              "  pm.expect(body.student).to.eql(\"beloed\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/ping",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "ping"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "1. GET список (per_page=2, sort=-price)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"Формат C: code, payload, timestamp, sign\", () => {",
+              "  pm.expect(body.code).to.eql(200);",
+              "  pm.expect(body.payload).to.be.an(\"array\");",
+              "  pm.expect(body).to.have.property(\"timestamp\");",
+              "  pm.expect(body.sign).to.include(\"beloed/\");",
+              "});",
+              "pm.test(\"per_page=2 и блок page\", () => {",
+              "  pm.expect(body.payload.length).to.be.at.most(2);",
+              "  pm.expect(body.page.size).to.eql(2);",
+              "});",
+              "pm.test(\"Сортировка по цене по убыванию\", () => {",
+              "  const p = body.payload.map(t => t.price);",
+              "  pm.expect(p).to.eql([...p].sort((a, b) => b - a));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tours?per_page=2&sort=-price",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours"
+          ],
+          "query": [
+            {
+              "key": "per_page",
+              "value": "2"
+            },
+            {
+              "key": "sort",
+              "value": "-price"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. POST создать (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 201\", () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "pm.test(\"Есть id и заголовок Location\", () => {",
+              "  pm.expect(body.payload.id).to.be.a(\"number\");",
+              "  pm.expect(pm.response.headers.get(\"Location\")).to.include(\"/api/tours/\" + body.payload.id);",
+              "});",
+              "pm.test(\"Логическое поле в формате yes/no\", () => pm.expect(body.payload.is_hot).to.be.oneOf([\"yes\", \"no\"]));",
+              "pm.environment.set(\"item_id\", body.payload.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"country_id\": 1,\n  \"title\": \"Тестовый тур Postman\",\n  \"description\": \"Тур создан из Postman\",\n  \"start_date\": \"2026-12-20\",\n  \"days\": 7,\n  \"price\": 55000,\n  \"is_hot\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tours",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. POST пустое тело (422)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 422\", () => pm.response.to.have.status(422));",
+              "const body = pm.response.json();",
+              "pm.test(\"Код в теле совпадает, payload = null\", () => {",
+              "  pm.expect(body.code).to.eql(422);",
+              "  pm.expect(body.payload).to.eql(null);",
+              "});",
+              "pm.test(\"Есть ошибки полей invalid.title\", () => pm.expect(body.invalid).to.have.property(\"title\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tours",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET одна запись (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 200\", () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"id совпадает с item_id\", () => pm.expect(body.payload.id).to.eql(Number(pm.environment.get(\"item_id\"))));",
+              "pm.test(\"Есть вложенная страна\", () => pm.expect(body.payload.country).to.have.property(\"name\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tours/{{item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours",
+            "{{item_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. PATCH одно поле (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Цена изменилась\", () => pm.expect(pm.response.json().payload.price).to.eql(59900));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 59900\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tours/{{item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours",
+            "{{item_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. PUT одно поле (422)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 422\", () => pm.response.to.have.status(422));",
+              "pm.test(\"Не хватает обязательных полей\", () => pm.expect(pm.response.json().invalid).to.have.property(\"country_id\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Только название\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/tours/{{item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours",
+            "{{item_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. DELETE (204)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 204\", () => pm.response.to.have.status(204));",
+              "pm.test(\"Тело пустое\", () => pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tours/{{item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours",
+            "{{item_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. GET после удаления (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Код 404\", () => pm.response.to.have.status(404));",
+              "const body = pm.response.json();",
+              "pm.test(\"Код в теле совпадает, есть error, payload = null\", () => {",
+              "  pm.expect(body.code).to.eql(404);",
+              "  pm.expect(body.payload).to.eql(null);",
+              "  pm.expect(body).to.have.property(\"error\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tours/{{item_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tours",
+            "{{item_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
