@@ -8,6 +8,7 @@ use App\Http\Resources\TourResource;
 use App\Models\Tour;
 use App\Support\ApiFormat;
 use Illuminate\Http\Request;
+use App\Models\Country;
 
 class TourController extends Controller
 {
@@ -75,4 +76,19 @@ class TourController extends Controller
 
         return response()->noContent(); // 204
     }
+    public function stats()
+    {
+    $countries = Country::withCount('tours')->withMin('tours', 'price')->orderBy('name')->get();
+
+    return ApiFormat::success([
+        'total_tours' => Tour::count(),
+        'min_price'   => (float) Tour::min('price'),
+        'by_country'  => $countries->map(fn ($c) => [
+            'country_id'  => $c->id,
+            'country'     => $c->name,
+            'tours_count' => $c->tours_count,
+            'min_price'   => $c->tours_min_price !== null ? (float) $c->tours_min_price : null,
+        ])->all(),
+    ]);
+    }    
 }
