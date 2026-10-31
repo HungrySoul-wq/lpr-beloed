@@ -19,4 +19,21 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+                $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return \App\Support\ApiFormat::error('Ошибка валидации', 422, $e->errors());
+            }
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                $message = match ($e->getStatusCode()) {
+                    404 => 'Ресурс не найден',
+                    405 => 'Метод не поддерживается для этого адреса',
+                    default => $e->getMessage() ?: 'Ошибка HTTP',
+                };
+
+                return \App\Support\ApiFormat::error($message, $e->getStatusCode());
+            }
+        });
     })->create();
